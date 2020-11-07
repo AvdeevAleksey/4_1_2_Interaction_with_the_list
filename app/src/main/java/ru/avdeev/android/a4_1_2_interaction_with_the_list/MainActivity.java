@@ -85,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
         return getSharedPreferences(LARGETEXT,MODE_PRIVATE).getString(KEY1,"");
     }
     private void deleteTextString (String text) {
-
         getSharedPreferences(LARGETEXT,MODE_PRIVATE)
                 .edit()
                 .remove(text)
