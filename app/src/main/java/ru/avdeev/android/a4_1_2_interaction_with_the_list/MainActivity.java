@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY2="key2";
     private static final String LARGETEXT="large_text";
     private ListAdapter listContentAdapter;
+    private SimpleAdapter listSimpleAdapter;
     List<Map<String, String>> values;
     List<Map<String,String>> result;
 
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String deleteLine = getResources().getString(R.string.large_text);
                 deleteTextString(deleteLine);
-                //listContentAdapter.notifyDataSetChanged(); Эта строка
+                listSimpleAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -57,7 +58,8 @@ public class MainActivity extends AppCompatActivity {
     @NonNull
     private ListAdapter createAdapter() {
         values= prepareContent(KEY1,KEY2);
-        return new SimpleAdapter(this, values, android.R.layout.simple_list_item_2, new String[]{KEY1,KEY2}, new int[]{android.R.id.text1,android.R.id.text2});
+        listSimpleAdapter = new SimpleAdapter(this, values, android.R.layout.simple_list_item_2, new String[]{KEY1,KEY2}, new int[]{android.R.id.text1,android.R.id.text2});
+        return listSimpleAdapter;
     }
 
     @NonNull
