@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,6 +14,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Adapter;
 import android.widget.SimpleAdapter;
+
+import com.google.android.material.behavior.SwipeDismissBehavior;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY1="key1";
     private static final String KEY2="key2";
     private static final String LARGETEXT="large_text";
+    private SwipeRefreshLayout swipeRefresh;
+    private ListView list;
     private ListAdapter listContentAdapter;
     private SimpleAdapter listSimpleAdapter;
     List<Map<String, String>> values;
@@ -40,7 +45,8 @@ public class MainActivity extends AppCompatActivity {
         //Toolbar toolbar = findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
         result = new ArrayList<>();
-        ListView list = findViewById(R.id.list);
+        list = findViewById(R.id.list);
+        swipeRefresh = findViewById(R.id.swipe_refresh);
         saveText(getString((R.string.large_text)));
         listContentAdapter = createAdapter();
         list.setAdapter(listContentAdapter);
@@ -50,7 +56,16 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String deleteLine = getResources().getString(R.string.large_text);
                 deleteTextString(deleteLine);
+                values.remove(i);
                 listSimpleAdapter.notifyDataSetChanged();
+            }
+        });
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefresh.setRefreshing(true);
+                recreate();
+                swipeRefresh.setRefreshing(false);
             }
         });
     }
@@ -92,5 +107,4 @@ public class MainActivity extends AppCompatActivity {
                 .remove(text)
                 .apply();
     }
-
 }
