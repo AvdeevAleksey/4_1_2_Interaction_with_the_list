@@ -5,7 +5,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Adapter;
@@ -24,8 +27,10 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String KEY1="key1";
     private static final String KEY2="key2";
+    private static final String LARGETEXT="large_text";
     private ListAdapter listContentAdapter;
     List<Map<String, String>> values;
+    List<Map<String,String>> result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,12 +38,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //Toolbar toolbar = findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
-
+        result = new ArrayList<>();
         ListView list = findViewById(R.id.list);
-
+        saveText(getString((R.string.large_text)));
         listContentAdapter = createAdapter();
-
         list.setAdapter(listContentAdapter);
+
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String deleteLine = getResources().getString(R.string.large_text);
+                deleteTextString(deleteLine);
+                //listContentAdapter.notifyDataSetChanged(); Эта строка
+            }
+        });
     }
 
     @NonNull
@@ -49,9 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
     @NonNull
     private List<Map<String, String>> prepareContent(String key1, String key2) {
-
-        List<Map<String,String>> result = new ArrayList<>();
-        String[] text=getString(R.string.large_text).split("\n\n");
+        String[] text=loadText().split("\n\n");
         List <String> textString = new ArrayList<String>();
         for (int j=0; j<text.length;j++) {
             textString.add(text[j]);
@@ -64,4 +75,21 @@ public class MainActivity extends AppCompatActivity {
         }
         return result;
     }
+    private void saveText (String text) {
+        getSharedPreferences(LARGETEXT,MODE_PRIVATE)
+                .edit()
+                .putString(KEY1,text)
+                .apply();
+    }
+    private String loadText() {
+        return getSharedPreferences(LARGETEXT,MODE_PRIVATE).getString(KEY1,"");
+    }
+    private void deleteTextString (String text) {
+
+        getSharedPreferences(LARGETEXT,MODE_PRIVATE)
+                .edit()
+                .remove(text)
+                .apply();
+    }
+
 }
